@@ -81,11 +81,6 @@ export const readingService = {
     }
   },
 
-  // Função para obter uma leitura específica
-  getReading: async (measure_datetime: Date, measure_type: "WATER" | "GAS") => {
-    return await readingRepository.findOne({ measure_datetime, measure_type });
-  },
-
   getReadingByUUID: async (
     measure_uuid: string
   ): Promise<ReadingData | null> => {
@@ -174,4 +169,16 @@ export const readingService = {
       measure_type,
     });
   },
+
+  listReadings: async (customer_code: string, measure_type?: string) => {
+    const readings = await readingRepository.findReadingsByCustomerCode(customer_code, measure_type);
+    
+    return readings.map((reading: { measure_uuid: string; measure_datetime: Date; measure_type: string; confirmed: boolean; image_url: string; }) => ({
+      measure_uuid: reading.measure_uuid,
+      measure_datetime: reading.measure_datetime,
+      measure_type: reading.measure_type,
+      has_confirmed: reading.confirmed,
+      image_url: reading.image_url,
+    }));
+  }
 };

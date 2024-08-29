@@ -5,7 +5,6 @@ export const router = Router();
 
 router.post('/upload', ReadingController.createReading);
 router.patch('/confirm', ReadingController.confirmReading);
-
-// router.get('/${costumer_code}/list', ReadingController.getReading);
+router.get("/:customer_code/list", ReadingController.listReadings);
 
 

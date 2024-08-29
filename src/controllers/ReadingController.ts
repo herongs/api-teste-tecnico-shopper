@@ -53,7 +53,9 @@ export class ReadingController {
       }
 
       // Busca a leitura com a measure_uuid fornecida
-      const reading = await readingService.getReadingByUUID(measure_uuid as string);
+      const reading = await readingService.getReadingByUUID(
+        measure_uuid as string
+      );
 
       // Retorna erro 404 se a leitura não for encontrada
       if (!reading) {
@@ -71,10 +73,7 @@ export class ReadingController {
         });
       }
 
-       await readingService.confirmReading(
-        measure_uuid,
-        confirmed_value
-      );
+      await readingService.confirmReading(measure_uuid, confirmed_value);
 
       return res.status(200).json({
         success: true,
@@ -84,28 +83,42 @@ export class ReadingController {
     }
   }
 
-  // public static async getReading(req: Request, res: Response) {
-  //   try {
-  //     const { measure_datetime, measure_type } = req.query;
+  public static async listReadings(req: Request, res: Response) {
+    const { customer_code } = req.params;
+    const { measure_type } = req.query;
 
-  //     if (!measure_datetime || !measure_type) {
-  //       return res
-  //         .status(400)
-  //         .json({ message: "Missing required query parameters" });
-  //     }
+    // Valida o parâmetro measure_type se for fornecido
+    if (
+      measure_type &&
+      typeof measure_type === "string" &&
+      !["WATER", "GAS"].includes(measure_type.toUpperCase())
+    ) {
+      return res.status(400).json({
+        error_code: "INVALID_TYPE",
+        error_description: "Tipo de medição não permitida",
+      });
+    }
 
-  //     const reading = await readingService.getReading(
-  //       measure_datetime as Date,
-  //       measure_type as "WATER" | "GAS"
-  //     );
+    try {
+      // Busca as medidas
+      const readings = await readingService.listReadings(
+        customer_code,
+        measure_type as string | undefined
+      );
 
-  //     if (!reading) {
-  //       return res.status(404).json({ message: "Reading not found" });
-  //     }
+      if (readings.length === 0) {
+        return res.status(404).json({
+          error_code: "MEASURES_NOT_FOUND",
+          error_description: "Nenhuma leitura encontrada",
+        });
+      }
 
-  //     return res.status(200).json(reading);
-  //   } catch (error) {
-  //     return res.status(500).json({ message: error });
-  //   }
-  // }
+      return res.status(200).json({
+        customer_code,
+        measures: readings,
+      });
+    } catch (error) {
+      return res.status(500).json({ message: error });
+    }
+  }
 }

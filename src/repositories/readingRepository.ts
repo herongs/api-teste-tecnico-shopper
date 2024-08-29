@@ -16,9 +16,7 @@ export const readingRepository = {
     return await readingRepo.findOneBy(criteria);
   },
 
-  findOneConfirmed: async (criteria: {
-    measure_uuid: string;
-  }) => {
+  findOneConfirmed: async (criteria: { measure_uuid: string }) => {
     const readingRepo = AppDataSource.getRepository(Reading);
     return await readingRepo.findOneBy(criteria);
   },
@@ -31,6 +29,23 @@ export const readingRepository = {
   saveConfirmedReading: async (readingData: Reading) => {
     const readingRepo = AppDataSource.getRepository(Reading);
     return await readingRepo.save(readingData);
-  }
+  },
 
+  findReadingsByCustomerCode: async (
+    customer_code: string,
+    measure_type?: string
+  ) => {
+    const query = AppDataSource.getRepository(Reading)
+      .createQueryBuilder("reading")
+      .where("reading.customer_code = :customer_code", { customer_code });
+
+    if (measure_type) {
+      const normalizedMeasureType = measure_type.toUpperCase();
+      query.andWhere("reading.measure_type = :measure_type", {
+        measure_type: normalizedMeasureType,
+      });
+    }
+    const readings = await query.getMany();
+    return readings;
+  },
 };
