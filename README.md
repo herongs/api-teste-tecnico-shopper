@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-    <b>O cenário propost foi o desenvolvimento do back-end de um serviço que gerencia a leitura individualizada de 
+    <b>O cenário proposto foi o desenvolvimento do back-end de um serviço que gerencia a leitura individualizada de 
 consumo de água e gás. Utilizando IA de forma a facilitar a coleta da informação, obtendo a medição através da foto de um medidor.</b>
 </p>
 
@@ -23,8 +23,8 @@ consumo de água e gás. Utilizando IA de forma a facilitar a coleta da informa�
 
 <h3>Pré-requisitos</h3>
 
-- [Docker]
-- [docker-compose]
+- Docker
+- docker-compose
 
 <h3>Clone</h3>
 
@@ -53,7 +53,7 @@ docker-composer up --build
 | <kbd>POST /upload</kbd>     | Responsável por receber uma imagem em base 64, consultar o Gemini e retornar a 
 medida lida pela API [request details](#post-upload-detail)
 | <kbd>PATCH /confirm</kbd>     | Responsável por confirmar ou corrigir o valor lido pelo LLM [request details](#patch-confirm-detail)
-| <kbd>GET /authenticate</kbd>     | Responsável por listar as medidas realizadas por um determinado cliente [response details](#get-list-detail)
+| <kbd>GET /:customer_code/list</kbd>     | Responsável por listar as medidas realizadas por um determinado cliente [response details](#get-list-detail)
 
 
 <h3 id="post-upload-detail">POST /upload</h3>
@@ -95,7 +95,7 @@ medida lida pela API [request details](#post-upload-detail)
 ```
 
 
-<h3 id="get-list-detail">GET /<customer_code>/list</h3>
+<h3 id="get-list-detail">GET /:customer_code/list</h3>
 
 **RESPONSE**
 ```json
