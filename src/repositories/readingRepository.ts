@@ -1,5 +1,5 @@
-import { AppDataSource } from '../config/database';
-import { Reading } from '../models/Reading';
+import { AppDataSource } from "../config/database";
+import { Reading } from "../models/Reading";
 
 export const readingRepository = {
   save: async (readingData: Partial<Reading>) => {
@@ -8,8 +8,24 @@ export const readingRepository = {
     return await readingRepo.save(reading);
   },
 
-  findOne: async (criteria: { customer_code: string, measure_datetime: Date, measure_type: 'WATER' | 'GAS' }) => {
+  findOne: async (criteria: {
+    measure_datetime: Date;
+    measure_type: "WATER" | "GAS";
+  }) => {
     const readingRepo = AppDataSource.getRepository(Reading);
     return await readingRepo.findOneBy(criteria);
-  }
+  },
+
+  findOneConfirmed: async (criteria: {
+    measure_uuid: string;
+  }) => {
+    const readingRepo = AppDataSource.getRepository(Reading);
+    return await readingRepo.findOneBy(criteria);
+  },
+
+  updateReading: async (readingData: Reading) => {
+    const readingRepo = AppDataSource.getRepository(Reading);
+    return await readingRepo.save(readingData);
+  },
+
 };
