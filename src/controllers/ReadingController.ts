@@ -46,13 +46,39 @@ export class ReadingController {
       const { measure_uuid, confirmed_value } = req.body;
 
       if (!measure_uuid || !confirmed_value) {
-        return res.status(400).json({ message: "Missing required fields" });
+        return res.status(400).json({
+          error_code: "INVALID_DATA",
+          error_description: "Missing required fields",
+        });
       }
 
-      const reading = await readingService.confirmReading(
+      // Busca a leitura com a measure_uuid fornecida
+      const reading = await readingService.getReadingByUUID(measure_uuid as string);
+
+      // Retorna erro 404 se a leitura não for encontrada
+      if (!reading) {
+        return res.status(404).json({
+          error_code: "MEASURE_NOT_FOUND",
+          error_description: "Leitura não encontrada",
+        });
+      }
+
+      // Verifica se a leitura já foi confirmada
+      if (reading.confirmed) {
+        return res.status(409).json({
+          error_code: "CONFIRMATION_DUPLICATE",
+          error_description: "Leitura do mês já realizada",
+        });
+      }
+
+       await readingService.confirmReading(
         measure_uuid,
         confirmed_value
       );
+
+      return res.status(200).json({
+        success: true,
+      });
     } catch (error) {
       return res.status(500).json({ message: error });
     }

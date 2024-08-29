@@ -28,4 +28,9 @@ export const readingRepository = {
     return await readingRepo.save(readingData);
   },
 
+  saveConfirmedReading: async (readingData: Reading) => {
+    const readingRepo = AppDataSource.getRepository(Reading);
+    return await readingRepo.save(readingData);
+  }
+
 };

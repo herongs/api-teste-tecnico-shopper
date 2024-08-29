@@ -19,4 +19,7 @@ export class Reading {
 
   @Column('int')
   measure_value!: number;
+
+  @Column('boolean', { default: false })
+  confirmed!: boolean;
 }

@@ -7,6 +7,7 @@ import fs from "fs";
 import path from "path";
 
 interface ReadingData {
+  confirmed: boolean;
   image_url: string;
   measure_value: number;
   customer_code: string;
@@ -50,6 +51,7 @@ export const readingService = {
         customer_code,
         measure_datetime: new Date(measure_datetime),
         measure_type,
+        confirmed: false
       };
 
       const savedReading = await readingRepository.save(newReading);
@@ -84,6 +86,13 @@ export const readingService = {
     return await readingRepository.findOne({ measure_datetime, measure_type });
   },
 
+  getReadingByUUID: async (
+    measure_uuid: string
+  ): Promise<ReadingData | null> => {
+    const reading = await readingRepository.findOneConfirmed({ measure_uuid });
+    return reading;
+  },
+
   // Função para confirmar uma leitura
   confirmReading: async (measure_uuid: string, confirmed_value: number) => {
     const reading = await readingRepository.findOneConfirmed({ measure_uuid });
@@ -92,8 +101,10 @@ export const readingService = {
       throw new Error("Reading not found");
     }
 
-    // Atualiza o valor confirmado
-    return await readingRepository.save(reading);
+    reading.confirmed = true;
+    reading.measure_value = confirmed_value;
+
+    return await readingRepository.saveConfirmedReading(reading);
   },
 
   // Funções auxiliares para processar a imagem
