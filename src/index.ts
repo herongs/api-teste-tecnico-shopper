@@ -1,7 +1,6 @@
-import { connectDatabase } from "./config/database";
-import { router } from "./routes/routes";
-import { AppDataSource } from "./config/database";
+import { AppDataSource, connectDatabase } from "./config/database";
 import { Reading } from "./models/Reading";
+import { router } from "./routes/routes";
 
 import bodyParser from "body-parser";
 import express from "express";
@@ -26,7 +25,7 @@ app.get('/image/:uuid', async (req, res) => {
 
     if (reading && reading.image_url) {
       // Redireciona para o URL local
-      res.redirect(`/uploads/${reading.image_url}`);
+      res.redirect(`${reading.image_url}`);
     } else {
       res.status(404).json({ message: 'Image not found' });
     }
@@ -41,8 +40,8 @@ const startServer = async () => {
     console.log("Starting server...");
 
     await connectDatabase(); // Conecta ao banco de dados
-    app.listen(3000, () => {
-      console.log("Server running on http://localhost:3000");
+    app.listen(80, () => {
+      console.log("Server running on http://localhost:80");
     });
   } catch (error) {
     console.error("Error starting the server:", error);
