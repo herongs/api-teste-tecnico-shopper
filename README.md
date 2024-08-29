@@ -50,8 +50,7 @@ docker-composer up --build
 
 | route               | description                                          
 |----------------------|-----------------------------------------------------
-| <kbd>POST /upload</kbd>     | Responsável por receber uma imagem em base 64, consultar o Gemini e retornar a 
-medida lida pela API [request details](#post-upload-detail)
+| <kbd>POST /upload</kbd>     | Responsável por receber uma imagem em base 64, consultar o Gemini e retornar a medida lida pela API [request details](#post-upload-detail)
 | <kbd>PATCH /confirm</kbd>     | Responsável por confirmar ou corrigir o valor lido pelo LLM [request details](#patch-confirm-detail)
 | <kbd>GET /:customer_code/list</kbd>     | Responsável por listar as medidas realizadas por um determinado cliente [response details](#get-list-detail)
 
